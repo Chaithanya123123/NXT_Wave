@@ -80,60 +80,64 @@ retried and the answer explicitly flags what couldn't be fetched. Nothing is har
 ## 4. Project Structure
 
 ```
-agri-advisor-ai/
-├── README.md                  ← you are here
-├── docs/architecture.md       ← system diagram (mermaid) + data-source table
-├── requirements.txt
-├── .env.example               ← copy to .env, add your keys
-├── pytest.ini
+NXT_Wave/                          ← repository root (you are here)
+├── README.md
+├── AgriAdvisor_Blueprint.md       ← buildathon blueprint
+├── .gitignore
 │
-├── app/
-│   ├── main.py                # FastAPI: /ask /transcribe /tts /health /kb/stats + serves frontend
-│   │
-│   ├── agent/
-│   │   ├── state.py           # TypedDict agent state + tool-output reducer
-│   │   ├── llm.py             # Gemini factory + structured Plan schema
-│   │   ├── nodes.py           # planner, tools, synthesizer, error handler
-│   │   ├── graph.py           # LangGraph wiring + translate node
-│   │   └── service.py         # public answer_query() entrypoint
-│   │
-│   ├── tools/
-│   │   ├── schemas.py         # pydantic models (WeatherReport, MandiPrice…)
-│   │   ├── weather_tool.py    # Open-Meteo 7-day forecast
-│   │   ├── mandi_tool.py      # Agmarknet live feed + JSON/XML parser + local filter
-│   │   ├── soil_tool.py       # SoilGrids pH/N/OC/texture
-│   │   └── rag_tool.py        # ChromaDB ingest + retrieval
-│   │
-│   ├── voice/
-│   │   ├── stt.py             # Sarvam saaras:v4 speech-to-text
-│   │   └── tts.py             # Sarvam bulbul:v3 text-to-speech (WAV)
-│   │
-│   ├── knowledge_base/
-│   │   ├── docs/                   # crop advisory corpus, one doc per crop:
-│   │   │   ├── seed_advisory.md        # groundnut, onion, cotton
-│   │   │   ├── rice_pest_disease.md    # BPH, blast, borers
-│   │   │   ├── wheat_agronomy.md       # sowing, rusts, irrigation
-│   │   │   ├── tomato_cultivation.md   # blights, drip, market timing
-│   │   │   └── paddy_water_management.md  # AWD, drainage, nutrients
-│   │   └── chroma_store/          # (auto-created) vector DB
-│   │
-│   └── utils/
-│       ├── config.py          # env vars + API endpoints
-│       ├── geo.py             # geocoding with fallback chain
-│       └── language.py        # langdetect language identification
-│
-├── frontend/                  # React (Vite) chat UI
-│   ├── package.json           # npm scripts: dev / build / preview
-│   ├── vite.config.js         # dev proxy → localhost:8000
-│   ├── src/
-│   │   ├── App.jsx            # chat state, streaming, TTS orchestration
-│   │   ├── api.js             # /ask/stream NDJSON reader + /transcribe + /tts
-│   │   ├── styles.css         # responsive agri-themed design
-│   │   └── components/        # Sidebar, ChatMessage, ChatInput, TracePanel
-│   └── dist/                  # (built) served by FastAPI at "/"
-│
-└── tests/
-    └── test_tools.py          # live tests: geocode, weather, soil, RAG, lang
+└── agri-advisor-ai/               ← run all commands from this folder
+    ├── docs/architecture.md       ← system diagram (mermaid) + data-source table
+    ├── requirements.txt
+    ├── .env.example               ← copy to .env, add your keys
+    ├── pytest.ini
+    │
+    ├── app/
+    │   ├── main.py                # FastAPI: /ask /transcribe /tts /health /kb/stats + serves frontend
+    │   │
+    │   ├── agent/
+    │   │   ├── state.py           # TypedDict agent state + tool-output reducer
+    │   │   ├── llm.py             # Gemini factory + structured Plan schema
+    │   │   ├── nodes.py           # planner, tools, synthesizer, error handler
+    │   │   ├── graph.py           # LangGraph wiring + translate node
+    │   │   └── service.py         # public answer_query() entrypoint
+    │   │
+    │   ├── tools/
+    │   │   ├── schemas.py         # pydantic models (WeatherReport, MandiPrice…)
+    │   │   ├── weather_tool.py    # Open-Meteo 7-day forecast
+    │   │   ├── mandi_tool.py      # Agmarknet live feed + JSON/XML parser + local filter
+    │   │   ├── soil_tool.py       # SoilGrids pH/N/OC/texture
+    │   │   └── rag_tool.py        # ChromaDB ingest + retrieval
+    │   │
+    │   ├── voice/
+    │   │   ├── stt.py             # Sarvam saaras:v4 speech-to-text
+    │   │   └── tts.py             # Sarvam bulbul:v3 text-to-speech (WAV)
+    │   │
+    │   ├── knowledge_base/
+    │   │   ├── docs/                   # crop advisory corpus, one doc per crop:
+    │   │   │   ├── seed_advisory.md        # groundnut, onion, cotton
+    │   │   │   ├── rice_pest_disease.md    # BPH, blast, borers
+    │   │   │   ├── wheat_agronomy.md       # sowing, rusts, irrigation
+    │   │   │   ├── tomato_cultivation.md   # blights, drip, market timing
+    │   │   │   └── paddy_water_management.md  # AWD, drainage, nutrients
+    │   │   └── chroma_store/          # (auto-created) vector DB
+    │   │
+    │   └── utils/
+    │       ├── config.py          # env vars + API endpoints
+    │       ├── geo.py             # geocoding with fallback chain
+    │       └── language.py        # langdetect language identification
+    │
+    ├── frontend/                  # React (Vite) chat UI
+    │   ├── package.json           # npm scripts: dev / build / preview
+    │   ├── vite.config.js         # dev proxy → localhost:8000
+    │   ├── src/
+    │   │   ├── App.jsx            # chat state, streaming, TTS orchestration
+    │   │   ├── api.js             # /ask/stream NDJSON reader + /transcribe + /tts
+    │   │   ├── styles.css         # responsive agri-themed design
+    │   │   └── components/        # Sidebar, ChatMessage, ChatInput, TracePanel, Markdown
+    │   └── dist/                  # (built) served by FastAPI at "/"
+    │
+    └── tests/
+        └── test_tools.py          # live tests: geocode, weather, soil, RAG, lang
 ```
 
 ---
@@ -156,6 +160,9 @@ Interactive docs: **http://localhost:8000/docs**
 ## 6. Getting Started
 
 ```bash
+# 0. enter the project folder
+cd agri-advisor-ai
+
 # 1. install
 pip install -r requirements.txt
 
